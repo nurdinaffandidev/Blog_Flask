@@ -23,7 +23,7 @@ def index():
 
 @app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template('about.html', title="Flask Blog - About")
 
 # __name__ = main when we run script with python directly
 if __name__ == '__main__':
