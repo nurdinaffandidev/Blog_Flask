@@ -1,0 +1,124 @@
+Flask uses **Jinja2** as its default templating engine.
+It allows you to dynamically generate HTML pages using Python-like syntax inside `.html` files.
+
+---
+
+## 🧩 Basic Example
+
+### **1. Folder Structure**
+
+```
+your_app/
+│
+├── app.py
+└── templates/
+    └── index.html
+```
+
+---
+
+### **2. `app.py`**
+
+```python
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template("index.html", name="Nurdin")
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
+---
+
+### **3. `templates/index.html`**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Templating</title>
+</head>
+<body>
+    <h1>Hello, {{ name }}!</h1>
+</body>
+</html>
+```
+
+---
+
+## 🔧 Templating Features
+
+### 🔁 **Control Structures**
+
+```html
+{% if user %}
+  <p>Welcome {{ user }}!</p>
+{% else %}
+  <p>Please log in.</p>
+{% endif %}
+
+<ul>
+{% for item in items %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ul>
+```
+
+### 📦 **Template Inheritance**
+
+* `base.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head><title>{% block title %}My Site{% endblock %}</title></head>
+<body>
+    <header>Header</header>
+    {% block content %}{% endblock %}
+</body>
+</html>
+```
+
+* `index.html`:
+
+```html
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  <h1>Welcome!</h1>
+{% endblock %}
+```
+
+### 🔐 **Autoescaping**
+
+Jinja2 autoescapes variables to prevent XSS:
+
+```html
+{{ user_input }}  {# Safe by default #}
+```
+
+To render raw HTML:
+
+```html
+{{ some_html|safe }}
+```
+
+---
+
+## 📚 Rendering with `render_template`
+
+```python
+render_template("template.html", key1="value", key2="value2")
+```
+
+* Variables (`key1`, `key2`) are available inside the template as `{{ key1 }}`, etc.
+
+---
+
+Want examples for forms, lists, or more advanced logic (like macros or includes)?
