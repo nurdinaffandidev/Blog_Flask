@@ -1,5 +1,11 @@
 from flask import Flask, render_template, url_for
+from forms import RegistrationForm, LoginForm
 app = Flask(__name__)
+
+'''
+Secret key will protect against modifying cookies and cross-site request forgery (csrf) attacks
+'''
+app.config['SECRET_KEY'] = '7f27bc7be8123abfc4ad055db736e8aa'
 
 posts = [
     {
@@ -24,6 +30,16 @@ def index():
 @app.route("/about")
 def about():
     return render_template('about.html', title="Flask Blog - About")
+
+@app.route("/register")
+def register():
+    form = RegistrationForm()
+    return render_template('register.html', title="Flask Blog - Register", form=form)
+
+@app.route("/login") # name of route
+def login(): # name of function
+    form = LoginForm()
+    return render_template('login.html', title="Flask Blog - Login", form=form)
 
 # __name__ = main when we run script with python directly
 if __name__ == '__main__':
