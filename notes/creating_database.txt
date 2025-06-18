@@ -1,0 +1,45 @@
+
+# creating database:
+-> cli in project directory, run python interpreter
+>>> from flask_blog import db
+>>> db.create all() # site.db file will be created in project directory
+
+# creating user table in database:
+-> within same python interpreter as above
+>>> from flask_blog import User, Post
+>>> user_1 = User(username='Nurdin', email='Nurd@demo.com', password='password')
+>>> db.session.add(user_1)
+>>> user_2 = User(username='Sam', email='sam@demo.com', password='password')
+>>> db.session.add(user_2)
+>>> db.session.commit()
+
+# simple sql queries:
+-> within same python interpreter as above
+>>> User.query.all() # returns list of users in user table
+>>> User.query.first() # returns first user in user table
+>>> User.query.filter_by(username='Nurdin').all() # returns list of users in user table with username = 'Nurdin'
+
+# assigning query result to variables:
+-> within same python interpreter as above
+>>> user = User.query.filter_by(username='Nurdin').first() # assign first user in user table with username = 'Nurdin' to 'user'
+>>> user # prints user __repr__
+>>> user.id # prints user id
+
+>>> user = User.query.get(1) # assign user with id 1 in user table to 'user'
+>>> user.posts # prints list of posts by user
+
+# creating post table in database:
+-> within same python interpreter as above
+>>> post_1 = Post(title='Blog 1', content='First post content', user_id=user.id)
+>>> post_2 = Post(title='Blog 2', content='Second post content', user_id=user.id)
+>>> db.session.add(post_1)
+>>> db.session.add(post_2)
+>>> db.session.commit()
+
+>>> user.posts # prints list of posts bt user
+>>> post = Post.query.first()
+>>> post.user_id # prints user id
+>>> post.author # prints user __repr__
+
+# dropping tables:
+>>> db.drop_all()

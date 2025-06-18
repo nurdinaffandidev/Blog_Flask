@@ -1,0 +1,4 @@
+
+# install sqlalchemy for flask specific extension that provides useful defaults and helpers for flask application:
+pip install flask-sqlalchemy
+
