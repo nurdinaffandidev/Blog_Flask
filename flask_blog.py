@@ -39,9 +39,16 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html', title="Flask Blog - Register", form=form)
 
-@app.route("/login") # name of route
+@app.route("/login", methods=['GET', 'POST']) # name of route
 def login(): # name of function
     form = LoginForm()
+    if form.validate_on_submit():
+        # mock successful login
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash(f'Logged in for account {form.email.data}', 'success') # flash: to send a one-time alert
+            return redirect(url_for('index'))
+        else:
+            flash(f'Invalid login credentials', 'danger')  # flash: to send a one-time alert
     return render_template('login.html', title="Flask Blog - Login", form=form)
 
 # __name__ = main when we run script with python directly
