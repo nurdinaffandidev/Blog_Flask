@@ -1,0 +1,86 @@
+### 🔍 What is **SQLAlchemy** in Python?
+
+**SQLAlchemy** is a powerful **SQL toolkit and Object Relational Mapper (ORM)** for Python. It allows you to interact with a database using **Python classes and objects** instead of writing raw SQL.
+
+---
+
+### ✅ Two Main Components
+
+1. **SQLAlchemy Core** (low-level)
+
+   * Lets you write SQL-like code using Python (like a SQL builder).
+   * Example:
+
+     ```python
+     from sqlalchemy import create_engine, Table, Column, Integer, String, MetaData
+     ```
+
+2. **SQLAlchemy ORM** (high-level)
+
+   * Maps Python classes to database tables.
+   * You interact with your DB like this:
+
+     ```python
+     user = User(name='Alice')
+     session.add(user)
+     session.commit()
+     ```
+
+---
+
+### 🧠 Why Use SQLAlchemy?
+
+| Feature                | Description                                                         |
+| ---------------------- | ------------------------------------------------------------------- |
+| ✅ Object-oriented API  | Treat database rows as Python objects.                              |
+| ✅ DB-agnostic          | Works with SQLite, PostgreSQL, MySQL, Oracle, etc.                  |
+| ✅ Safe & Composable    | Helps prevent SQL injection.                                        |
+| ✅ Migrations & Schemas | Can be integrated with tools like **Alembic** or **Flask-Migrate**. |
+| ✅ Complex Queries      | Supports joins, filters, subqueries, etc. easily.                   |
+
+---
+
+### 🏗️ Basic ORM Example
+
+```python
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+engine = create_engine('sqlite:///example.db')
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    email = Column(String)
+
+Base.metadata.create_all(engine)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Create
+user = User(name='Alice', email='alice@example.com')
+session.add(user)
+session.commit()
+
+# Read
+users = session.query(User).all()
+print(users)
+```
+
+---
+
+### 🔗 Common Use Case: With Flask
+
+In Flask, people usually use **Flask-SQLAlchemy**, a wrapper around SQLAlchemy that integrates easily with Flask apps.
+
+---
+
+Let me know if you want:
+
+* Flask + SQLAlchemy example
+* SQLAlchemy relationships (foreign keys, many-to-many)
+* Raw SQL with SQLAlchemy Core
+* Project structure advice

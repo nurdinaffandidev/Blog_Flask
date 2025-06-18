@@ -1,0 +1,69 @@
+### 🔍 What is `lambda:` in Python?
+
+A **`lambda`** in Python is a way to create a **small anonymous function** (a function without a name).
+
+---
+
+### 📌 Syntax
+
+```python
+lambda arguments: expression
+```
+
+It’s just like a shortcut for `def` when you need a simple one-liner function.
+
+---
+
+### ✅ Example 1: Basic Usage
+
+```python
+add = lambda x, y: x + y
+print(add(2, 3))  # Output: 5
+```
+
+Equivalent to:
+
+```python
+def add(x, y):
+    return x + y
+```
+
+---
+
+### ✅ Example 2: No Arguments
+
+```python
+now = lambda: datetime.now(timezone.utc)
+print(now())  # Calls the function, returns the current UTC time
+```
+
+Equivalent to:
+
+```python
+def now():
+    return datetime.now(timezone.utc)
+```
+
+---
+
+### 🛠 Why `lambda:` is used in `default=...`?
+
+In SQLAlchemy:
+
+```python
+default=lambda: datetime.now(timezone.utc)
+```
+
+You pass a **function**, not a **value**. That function gets called **every time** a new row is inserted, so the default timestamp is always current.
+
+---
+
+### 🧠 TL;DR
+
+| Term        | Meaning                                             |
+| ----------- | --------------------------------------------------- |
+| `lambda:`   | Anonymous function                                  |
+| Use case    | When you need a short function (often one-liner)    |
+| In DB model | Used to delay evaluation (e.g., timestamp defaults) |
+
+Let me know if you want more real-life examples or how it's used in sorting/filtering!
