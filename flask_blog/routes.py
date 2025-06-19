@@ -2,6 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_blog import app, db, bcrypt
 from flask_blog.forms import RegistrationForm, LoginForm
 from flask_blog.models import User, Post
+from flask_login import login_user, current_user
 
 # Mock posts
 posts = [
@@ -31,6 +32,10 @@ def about():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    # check existing logged in user
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     form = RegistrationForm()
     if form.validate_on_submit():
         # get hashed password
@@ -47,11 +52,18 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST']) # name of route
 def login(): # name of function
+    # check existing logged in user
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if form.validate_on_submit():
-        # mock successful login
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash(f'Logged in for account {form.email.data}', 'success') # flash: to send a one-time alert
+        # check if user exists in database
+        user = User.query.filter_by(email=form.email.data).first()
+        # check password matches in database
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            flash(f'Logged in for account {form.email.data}', 'success')  # flash: to send a one-time alert
             return redirect(url_for('index'))
         else:
             flash(f'Invalid login credentials', 'danger')  # flash: to send a one-time alert
