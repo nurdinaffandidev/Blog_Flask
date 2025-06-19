@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, flash, redirect
-from forms import RegistrationForm, LoginForm
+from flask_blog.forms import RegistrationForm, LoginForm
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -13,8 +13,6 @@ app.config['SECRET_KEY'] = '7f27bc7be8123abfc4ad055db736e8aa'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 # create database instance
 db = SQLAlchemy(app)
-
-from models import User, Post
 
 # Mock posts
 posts = [
