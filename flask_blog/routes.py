@@ -1,18 +1,7 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect
+from flask_blog import app
 from flask_blog.forms import RegistrationForm, LoginForm
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-
-### Configurations: ###
-# Configure secret key:
-# Secret key will protect against modifying cookies and cross-site request forgery (csrf) attacks
-app.config['SECRET_KEY'] = '7f27bc7be8123abfc4ad055db736e8aa'
-# Configure database:
-# Using SQLite as easiest to set up and will simply be a file on our file system
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-# create database instance
-db = SQLAlchemy(app)
+from flask_blog.models import User, Post
 
 # Mock posts
 posts = [
@@ -59,7 +48,3 @@ def login(): # name of function
         else:
             flash(f'Invalid login credentials', 'danger')  # flash: to send a one-time alert
     return render_template('login.html', title="Flask Blog - Login", form=form)
-
-# __name__ = main when we run script with python directly in CLI(command-line interface)
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5001, debug=True)
