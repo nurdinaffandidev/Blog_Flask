@@ -1,3 +1,15 @@
+'''
+   Note:
+   - When encounter "RuntimeError: Working outside of application context.", use `with app.app_context():...`
+   - Example
+   ```
+   >>> with app.app_context():
+         db.create_all()
+
+   >>> with app.app_context():
+         User.query.all()
+   ```
+'''
 
 # creating database:
 -> cli in project directory, run python interpreter

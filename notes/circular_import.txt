@@ -1,0 +1,85 @@
+### 🔄 What is a **Circular Import** in Python?
+
+A **circular import** occurs when **two or more modules try to import each other** directly or indirectly — creating a loop that can confuse the Python interpreter.
+
+---
+
+### 📦 Example of a Circular Import
+
+#### `module_a.py`:
+
+```python
+from module_b import func_b
+
+def func_a():
+    print("Function A")
+    func_b()
+```
+
+#### `module_b.py`:
+
+```python
+from module_a import func_a
+
+def func_b():
+    print("Function B")
+    func_a()
+```
+
+When you run either module, Python may raise an **ImportError**, or worse, your code may **partially run** with missing or `None` objects.
+
+---
+
+### ⚠️ Why It Happens
+
+* Python loads modules **once**, top to bottom.
+* If `module_a` is still loading and it tries to import `module_b`, which in turn tries to import `module_a` again — Python sees `module_a` as not fully loaded yet.
+* This leads to **incomplete objects**, errors, or unexpected behavior.
+
+---
+
+### 🧯 How to Fix Circular Imports
+
+#### ✅ Option 1: **Rearrange imports**
+
+Move the import inside a function or method:
+
+```python
+# module_b.py
+def func_b():
+    from module_a import func_a  # local import avoids circular import at top-level
+    print("Function B")
+    func_a()
+```
+
+#### ✅ Option 2: **Refactor shared code into a third module**
+
+Create a new `shared.py`:
+
+```python
+# shared.py
+def shared_logic():
+    print("This logic is used in both modules.")
+```
+
+Then import it in both `module_a` and `module_b`:
+
+```python
+from shared import shared_logic
+```
+
+#### ✅ Option 3: **Use import at runtime (lazy import)**
+
+```python
+def use_other_module():
+    import other_module
+    other_module.some_func()
+```
+
+---
+
+### 🧠 Rule of Thumb
+
+> **Avoid top-level imports that depend on each other.** If two modules need each other, consider rethinking their separation.
+
+---
