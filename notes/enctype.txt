@@ -1,0 +1,76 @@
+The HTML attribute `enctype="multipart/form-data"` is required when your form uploads files,
+such as images, PDFs, etc.
+
+---
+
+## 🧾 What `enctype` Does
+
+* **`enctype` = encoding type** — tells the browser how to encode form data before sending it to the server.
+* When you use file inputs (`<input type="file">`), the form **must** use:
+
+```html
+<form method="POST" enctype="multipart/form-data">
+```
+
+Without this, uploaded files won't be included in the request, and Flask (or any backend) won't see them.
+
+---
+
+## ✅ When to Use `multipart/form-data`
+
+Use it if your form includes:
+
+```html
+<input type="file" name="profile_pic">
+```
+
+Otherwise, just use the default `application/x-www-form-urlencoded`.
+
+---
+
+## ✅ Flask Example with File Upload
+
+### HTML:
+
+```html
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {{ form.picture.label }} {{ form.picture() }}
+    {{ form.submit() }}
+</form>
+```
+
+### WTForms:
+
+```python
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import SubmitField
+
+class UploadForm(FlaskForm):
+    picture = FileField('Upload Image', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Upload')
+```
+
+### Flask Route:
+
+```python
+from flask import request
+from werkzeug.utils import secure_filename
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
+    if form.validate_on_submit():
+        file = form.picture.data
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.root_path, 'static/uploads', filename))
+        flash('File uploaded!')
+        return redirect(url_for('upload'))
+
+    return render_template('upload.html', form=form)
+```
+
+---
+
+Let me know if you want to enable profile picture uploads in your blog app — I can help wire it in!

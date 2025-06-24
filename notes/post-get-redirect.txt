@@ -1,0 +1,89 @@
+The **Post-Redirect-Get (PRG) pattern** is a best practice in web development
+to prevent **duplicate form submissions** and improve **user experience**.
+
+---
+
+## 🔁 What is Post-Redirect-Get?
+
+1. POST: User submits a form (e.g., login, comment, register).
+2. REDIRECT: Server processes the form, then responds with a `redirect()` to a new URL.
+3. GET: Browser automatically performs a GET request to the new URL and shows the page.
+
+---
+
+### ❌ Without PRG:
+
+* Submitting a form loads a result page directly.
+* Refreshing the page triggers **resubmission of the form**.
+* Browser might ask: *“Do you want to resubmit the form?”*
+
+---
+
+### ✅ With PRG:
+
+* After processing, the server sends `redirect(url_for('some_view'))`
+* Refreshing doesn't re-submit the form — it just re-GETs the new page
+* Prevents duplicates, especially for things like:
+
+  * Registration
+  * Payment
+  * Posting comments
+
+---
+
+## ✅ Flask Example (PRG pattern)
+
+```python
+from flask import Flask, render_template, redirect, url_for, flash, request
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
+app = Flask(__name__)
+app.secret_key = 'secret'
+
+class CommentForm(FlaskForm):
+    comment = StringField('Comment', validators=[DataRequired()])
+    submit = SubmitField('Post')
+
+@app.route('/comment', methods=['GET', 'POST'])
+def comment():
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment_text = form.comment.data
+        # Save to database or process here
+        flash('Comment posted!')
+        return redirect(url_for('comment'))  # ← PRG: Redirect after POST
+
+    return render_template('comment.html', form=form)  # GET or POST fallthrough
+```
+
+---
+
+## 🧠 Key Flask Functions
+
+* `form.validate_on_submit()` checks for `POST` and valid input
+* `redirect(url_for(...))` triggers the redirect (step 2 of PRG)
+* `render_template(...)` handles the GET
+
+---
+
+## 🧪 Tip: Use Flash for Feedback Across Redirects
+
+Since you’re redirecting, use `flash()` to pass messages:
+
+```python
+flash('Account created successfully!')
+```
+
+And in template:
+
+```html
+{% with messages = get_flashed_messages() %}
+  {% for msg in messages %}
+    <div class="alert">{{ msg }}</div>
+  {% endfor %}
+{% endwith %}
+```
+
+---
