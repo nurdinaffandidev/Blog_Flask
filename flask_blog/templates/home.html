@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+  {% if current_user.is_authenticated %}
+    <h4 style="color: #2aacb6">Welcome, {{ current_user.username.title() }}</h4>
+  {% endif %}
   {% for post in posts %}
     <article class="media content-section">
       <div class="media-body">
