@@ -8,26 +8,13 @@ from flask_blog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from PIL import Image
 
-# Mock posts
-posts = [
-    {
-        'author': 'Nurdin Affandi',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'Jun 17, 2025'
-    },
-    {
-        'author': 'Joshi Boy',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'Jun 18, 2025'
-    }
-]
 
 # Routes:
 @app.route("/")
 @app.route("/home")
 def index():
+    posts = Post.query.all()
+    # posts = Post.query.order_by(Post.date_posted.desc()).all()
     return render_template('home.html', posts=posts)
 
 @app.route("/about")
@@ -132,6 +119,10 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
+        # creating post and adding post to db
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
         flash(f'Your post has been created!', 'success')  # flash: to send a one-time alert
         return redirect(url_for('index'))
     return render_template('create_post.html', title='New Post', form=form)
