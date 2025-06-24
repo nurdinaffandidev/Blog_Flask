@@ -87,7 +87,10 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash(f'You account has been updated!', 'success')  # flash: to send a one-time alert
+        flash(f'Your account has been updated!', 'success')  # flash: to send a one-time alert
         return redirect(url_for('account')) # redirect required due to post-get-redirect pattern
+    elif request.method == 'GET': # populate fields with current_user data
+        form.username.data = current_user.username
+        form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)
