@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from flask_blog import app, db, bcrypt
 from flask_blog.forms import RegistrationForm, LoginForm
 from flask_blog.models import User, Post
@@ -63,8 +63,11 @@ def login(): # name of function
         # check password matches in database
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
+            # add next_page routing to where page user was trying to access but prompted for login
+            # sample url: http://localhost:5001/login?next=%2Faccount
+            next_page = request.args.get('next')
             flash(f'Logged in for account {form.email.data}', 'success')  # flash: to send a one-time alert
-            return redirect(url_for('index'))
+            return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             flash(f'Invalid login credentials', 'danger')  # flash: to send a one-time alert
     return render_template('login.html', title="Flask Blog - Login", form=form)

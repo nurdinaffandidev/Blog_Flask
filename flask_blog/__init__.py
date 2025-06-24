@@ -20,5 +20,6 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 # configure login view of login_manager
 login_manager.login_view = 'login' # 'login' => function name of route
+login_manager.login_message_category = 'info'
 
 from flask_blog import routes
