@@ -13,8 +13,7 @@ from PIL import Image
 @app.route("/")
 @app.route("/home")
 def index():
-    posts = Post.query.all()
-    # posts = Post.query.order_by(Post.date_posted.desc()).all()
+    posts = Post.query.order_by(Post.date_posted.desc()).all()
     return render_template('home.html', posts=posts)
 
 @app.route("/about")
@@ -126,3 +125,9 @@ def new_post():
         flash(f'Your post has been created!', 'success')  # flash: to send a one-time alert
         return redirect(url_for('index'))
     return render_template('create_post.html', title='New Post', form=form)
+
+
+@app.route("/post/<int:post_id>")
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title=post.title, post=post)
