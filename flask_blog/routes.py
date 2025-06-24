@@ -59,7 +59,7 @@ def login(): # name of function
             flash(f'Logged in for account {form.email.data}', 'success')  # flash: to send a one-time alert
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
-            flash(f'Invalid login credentials', 'danger')  # flash: to send a one-time alert
+            flash('Invalid login credentials', 'danger')  # flash: to send a one-time alert
     return render_template('login.html', title="Flask Blog - Login", form=form)
 
 
@@ -104,7 +104,7 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash(f'Your account has been updated!', 'success')  # flash: to send a one-time alert
+        flash('Your account has been updated!', 'success')  # flash: to send a one-time alert
         return redirect(url_for('account')) # redirect required due to post-get-redirect pattern
     elif request.method == 'GET': # populate fields with current_user data
         form.username.data = current_user.username
@@ -122,7 +122,7 @@ def new_post():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash(f'Your post has been created!', 'success')  # flash: to send a one-time alert
+        flash('Your post has been created!', 'success')  # flash: to send a one-time alert
         return redirect(url_for('index'))
     return render_template('create_post.html', title='New Post', form=form, legend='New Post')
 
