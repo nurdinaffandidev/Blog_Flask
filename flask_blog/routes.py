@@ -6,6 +6,7 @@ from flask_blog import app, db, bcrypt
 from flask_blog.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flask_blog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
+from PIL import Image
 
 # Mock posts
 posts = [
@@ -84,7 +85,7 @@ def logout():
 
 def save_picture(form_picture):
     """
-       Randomize picture file name and save picture file locally.
+       Randomize picture file name, resized picture and save picture file locally.
 
        Args:
            form_picture (FileStorage): Picture file data.
@@ -96,7 +97,12 @@ def save_picture(form_picture):
     file_name, file_extension = os.path.splitext(form_picture.filename)
     picture_file_name = random_hex + file_extension
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_file_name)
-    form_picture.save(picture_path)
+
+    output_size = (125, 125)
+    resized_image = Image.open(form_picture)
+    resized_image.thumbnail(output_size)
+    resized_image.save(picture_path)
+
     return picture_file_name
 
 
