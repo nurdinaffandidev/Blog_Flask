@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_blog import app, db, bcrypt
 from flask_blog.forms import RegistrationForm, LoginForm
 from flask_blog.models import User, Post
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
 # Mock posts
 posts = [
@@ -76,5 +76,6 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route("/account")
+@login_required
 def account():
     return render_template('account.html')
