@@ -1,4 +1,15 @@
 
-# install sqlalchemy for flask specific extension that provides useful defaults and helpers for flask application:
+# activate environment
+source .venv/bin/activate
+
+# deactivate environment
+deactivate
+
+# install flask_sqlalchemy for flask specific extension that provides useful defaults and helpers for flask application:
 pip install flask-sqlalchemy
 
+# install flask_bcrypt for hashing algorithm
+pip install flask-bcrypt
+
+# install flask_login for managing logins using LoginManager
+pip install flask-login

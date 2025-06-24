@@ -1,0 +1,30 @@
+
+```
+(.venv) nurdin@nurdins-MacBook-Pro Flask_Blog % python
+Python 3.12.7 (v3.12.7:0b05ead877f, Sep 30 2024, 23:18:00) [Clang 13.0.0 (clang-1300.0.29.30)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+
+# import Bcrypt (to `pip install flask-bcrypt` first)
+>>> from flask_bcrypt import Bcrypt
+
+# instantiating Bcrypt
+>>> bcrypt = Bcrypt()
+
+>>> # hashing to bytes object
+>>> bcrypt.generate_password_hash('password')
+b'$2b$12$zBDHXbaxwWQoDj.ZboTu0OTglrpeJ8XKc9NKvUbSTJlFkbqHNTiYe'
+
+>>> # hashing to string format
+>>> bcrypt.generate_password_hash('password').decode('utf-8')
+'$2b$12$qmF8ZrxZFB1I7T2LPUgfMe2MmAZGPS0NX9NqjR9mIL6MeuYRMrlb6'
+
+>>> # each hashing returns different hash even if word is the same
+>>> bcrypt.generate_password_hash('password').decode('utf-8')
+'$2b$12$jaOSi3ELDs4ZIsaUyZlktuNa0oICEhK2lGXzg4lNIqTiB4/zpNRH2'
+
+# checking hashed object
+>>> hashed_pw = bcrypt.generate_password_hash('password').decode('utf-8')
+>>> bcrypt.check_password_hash(hashed_pw, 'testing')
+False
+>>> bcrypt.check_password_hash(hashed_pw, 'password')
+True

@@ -13,7 +13,7 @@
 
 # creating database:
 -> cli in project directory, run python interpreter
->>> from flask_blog import db
+>>> from flask_blog import db, app
 >>> db.create all() # site.db file will be created in project directory
 
 # creating user table in database:
