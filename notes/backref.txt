@@ -1,0 +1,80 @@
+In **Flask with SQLAlchemy**, a back reference (or `backref`) allows you to create a **bidirectional relationship** between models
+— meaning you can access related data from either side of the relationship *without manually defining two relationships*.
+
+---
+
+## ✅ Quick Example: `User` and `Post` Models
+
+```python
+# models.py
+
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+
+    # No need to manually define `posts` — backref will create it
+    # posts = db.relationship('Post', backref='author', lazy=True)
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    # Backref 'author' will allow access: post.author (User)
+    author = db.relationship('User', backref=db.backref('posts', lazy=True))
+```
+
+---
+
+## 🔁 What `backref` Does:
+
+It creates an **automatic reverse attribute** on the related model.
+
+### 🔄 So you get:
+
+* `post.author` → the `User` who made the post ✅
+* `user.posts` → a list of `Post` objects from that user ✅
+
+---
+
+## 🧠 Without `backref`, you'd need two separate relationships:
+
+```python
+class User(db.Model):
+    ...
+    posts = db.relationship('Post', back_populates='author')
+
+class Post(db.Model):
+    ...
+    author = db.relationship('User', back_populates='posts')
+```
+
+This is **more verbose** but gives finer control (`back_populates` is more explicit).
+
+---
+
+## 📌 lazy=True
+
+`lazy=True` means SQLAlchemy will load related data **only when accessed**, not when the parent object is queried.
+
+---
+
+## ✅ Summary
+
+| Term             | Meaning                                                        |
+| ---------------- | -------------------------------------------------------------- |
+| `backref`        | Auto-creates reverse access (e.g., `user.posts`)               |
+| `lazy=True`      | Loads related data on access (recommended for most Flask apps) |
+| `back_populates` | Manual way of setting up two-way relationships (explicit)      |
+
+---
+
+Let me know if you want help setting up relationships in your blog (e.g., users, posts, comments)!
