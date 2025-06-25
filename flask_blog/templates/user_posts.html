@@ -1,8 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-  {% if current_user.is_authenticated %}
-    <h4 style="color: #2aacb6">Welcome, {{ current_user.username.title() }}</h4>
-  {% endif %}
+<h2 class="mb-3">Posts by {{ user.username.title() }} ({{ posts.total }} posts)</h2>
 <!-- use posts.items to retrieve post from Pagination object -->
   {% for post in posts.items %}
     <article class="media content-section">
@@ -22,9 +20,9 @@
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %} <!-- adding limits to displayed pagination -->
       {% if page_num %}
         {% if posts.page == page_num %}
-          <a class="btn btn-info mb-4 mx-1" style="border-radius: 10px" href="{{ url_for('index', page=page_num)}}">{{ page_num }}</a>
+          <a class="btn btn-info mb-4 mx-1" style="border-radius: 10px" href="{{ url_for('user_posts', username=user.username, page=page_num)}}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-info mb-4 mx-1" style="border-radius: 10px" href="{{ url_for('index', page=page_num)}}">{{ page_num }}</a>
+          <a class="btn btn-outline-info mb-4 mx-1" style="border-radius: 10px" href="{{ url_for('user_posts', username=user.username, page=page_num)}}">{{ page_num }}</a>
         {% endif %}
       {% else %}
         ...
