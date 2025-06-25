@@ -16,3 +16,6 @@ pip install flask-login
 
 # install Pillow for managing pictures such as resizing
 pip install Pillow
+
+# install flask-mail for sending emails
+pip install flask-mail
