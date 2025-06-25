@@ -1,0 +1,100 @@
+Your route is **perfectly structured** for pagination using Flask-SQLAlchemy. Here's a breakdown of what your code does and how to handle it on the template side.
+
+---
+
+## ✅ What your code does
+
+```python
+@app.route("/")
+@app.route("/home")
+def index():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=2)
+    return render_template('home.html', posts=posts)
+```
+
+### Breakdown:
+
+* `page = request.args.get('page', 1, type=int)`
+  → Gets the current page number from the URL query string, defaulting to page 1.
+
+* `.paginate(page=page, per_page=2)`
+  → Loads 2 posts per page and returns a **`Pagination` object**.
+
+* `posts` is a `Pagination` object with attributes like:
+
+  * `posts.items`: the list of `Post` objects on the current page
+  * `posts.has_next`, `posts.next_num`, `posts.has_prev`, `posts.prev_num`
+  * `posts.page`, `posts.pages`
+
+---
+
+## ✅ In Your `home.html` Template
+
+Here's how to use it:
+
+```html
+{% for post in posts.items %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h4>{{ post.title }}</h4>
+      <p class="card-text">
+        {{ post.content }}
+        <br>
+        <small class="text-muted">By {{ post.author.username }} on {{ post.date_posted.strftime('%B %d, %Y') }}</small>
+      </p>
+    </div>
+  </div>
+{% endfor %}
+```
+
+### Pagination controls:
+
+```html
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if posts.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('index', page=posts.prev_num) }}">Previous</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Previous</span>
+      </li>
+    {% endif %}
+
+    <li class="page-item disabled">
+      <span class="page-link">
+        Page {{ posts.page }} of {{ posts.pages }}
+      </span>
+    </li>
+
+    {% if posts.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('index', page=posts.next_num) }}">Next</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">Next</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+```
+
+---
+
+## 🧪 Resulting URLs
+
+* `http://localhost:5000/` → page 1
+* `http://localhost:5000/?page=2` → page 2
+
+---
+
+Let me know if you'd like to:
+
+* Show page **numbers** (1, 2, 3…)
+* Style pagination with **Bootstrap 5**
+* Add AJAX-based infinite scrolling
+
+Happy to help!
