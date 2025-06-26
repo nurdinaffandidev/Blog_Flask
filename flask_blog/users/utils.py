@@ -1,0 +1,51 @@
+
+
+def save_picture(form_picture):
+    """
+       Randomize picture file name, resized picture and save picture file locally.
+
+       Args:
+           form_picture (FileStorage): Picture file data.
+
+       Returns:
+           str: Picture file name.
+    """
+    random_hex = secrets.token_hex(8)
+    file_name, file_extension = os.path.splitext(form_picture.filename)
+    picture_file_name = random_hex + file_extension
+    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_file_name)
+
+    output_size = (125, 125)
+    resized_image = Image.open(form_picture)
+    resized_image.thumbnail(output_size)
+    resized_image.save(picture_path)
+
+    return picture_file_name
+
+
+def send_reset_email(user):
+    # set token and reset_url
+    token = user.get_reset_token()
+    reset_url = url_for('reset_token', token=token, _external=True)
+
+    # message subject line
+    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+
+    # message body
+    msg_template = Template("""
+    Hi $name,
+
+    To reset your password, visit the following link:
+    $reset_link
+
+    If you did not make this request, please ignore this email.
+
+    Best regards,  
+    Support Team
+    """)
+
+    msg.body = msg_template.substitute(name=user.username.title(), reset_link=reset_url)
+
+    # send email
+    mail.send(msg)
+    return None
