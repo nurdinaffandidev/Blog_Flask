@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
-from flask_blog import db, login_manager, app
+from flask_blog import db, login_manager
 from flask_login import UserMixin
 from itsdangerous import URLSafeTimedSerializer as Serializer, SignatureExpired, BadSignature
+from flask import current_app
 
 '''
 Login Manager extension will expect User model to have certain attributes and methods
@@ -40,7 +41,7 @@ class User(db.Model, UserMixin):
         Returns:
             str: A URL-safe, signed token containing the user's ID.
         """
-        serializer = Serializer(app.config['SECRET_KEY'])
+        serializer = Serializer(current_app.config['SECRET_KEY'])
         token = serializer.dumps({'user_id': self.id})
         return token
 
@@ -62,7 +63,7 @@ class User(db.Model, UserMixin):
             User | None: The user associated with the token if valid,
             or None if the token is expired, invalid, or an error occurs.
         """
-        serializer = Serializer(app.config['SECRET_KEY'])
+        serializer = Serializer(current_app.config['SECRET_KEY'])
         try:
             user_id = serializer.loads(token, max_age=expires_sec)['user_id']
         except SignatureExpired:

@@ -1,4 +1,8 @@
-from flask_blog import app
+import os
+from flask_blog import create_app
+
+
+app = create_app()
 
 # __name__ = main when we run script with python directly in CLI(command-line interface)
 if __name__ == '__main__':
