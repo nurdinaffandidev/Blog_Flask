@@ -1,4 +1,6 @@
-from flask import Blueprint
+from flask import render_template, request, Blueprint
+from flask_blog.models import Post
+
 
 # create instance of Blueprint
 main = Blueprint('main', __name__)
