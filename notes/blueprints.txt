@@ -1,0 +1,94 @@
+In Flask, a Blueprint is a way to organize your app into smaller, modular components — especially useful for large applications.
+Each Blueprint can contain its own views, templates, static files, and even error handlers.
+
+---
+
+## ✅ Why Use Blueprints?
+
+* Clean separation of concerns (e.g., `auth`, `blog`, `admin`)
+* Reusability across projects
+* Keeps the main `app.py` clean
+
+---
+
+## 🧱 Basic Structure
+
+```
+your_app/
+│
+├── app/
+│   ├── __init__.py         # App factory
+│   ├── routes.py           # Regular routes (optional)
+│   ├── auth/               # A blueprint
+│   │   ├── __init__.py     # Blueprint instance
+│   │   ├── routes.py       # Blueprint routes
+│   │   └── forms.py
+│   └── main/
+│       ├── __init__.py
+│       └── routes.py
+│
+└── run.py                  # Entry point
+```
+
+---
+
+## ✅ 1. Define a Blueprint (e.g., `auth/routes.py`)
+
+```python
+from flask import Blueprint, render_template, redirect, url_for
+
+auth = Blueprint('auth', __name__)
+
+@auth.route("/login")
+def login():
+    return render_template("login.html")
+
+@auth.route("/logout")
+def logout():
+    return redirect(url_for("main.home"))
+```
+
+---
+
+## ✅ 2. Register Blueprint in `app/__init__.py`
+
+```python
+from flask import Flask
+
+def create_app():
+    app = Flask(__name__)
+
+    from .auth.routes import auth
+    from .main.routes import main
+
+    app.register_blueprint(auth, url_prefix="/auth")
+    app.register_blueprint(main)
+
+    return app
+```
+
+---
+
+## ✅ 3. Entry Point: `run.py`
+
+```python
+from app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
+---
+
+## 🧭 Example URLs
+
+If you set `url_prefix="/auth"` when registering `auth`, then:
+
+* `/auth/login` → `auth.routes.login`
+* `/auth/logout` → `auth.routes.logout`
+
+---
+
+Let me know if you'd like help creating a full example Blueprint with forms, templates, and authentication!

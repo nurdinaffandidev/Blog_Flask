@@ -1,0 +1,84 @@
+In Flask, extensions that are designed using an application factory pattern should not initially bind their object to the application.
+This is a best practice for Flask extensions, allowing them to be used with multiple applications and preventing application-specific state from being stored on the extension object.
+
+Here’s a breakdown of the reasoning and how it's typically implemented:
+
+---
+
+### ✅ **Why Extensions Should Not Bind to the App Initially**
+
+When using the **application factory pattern**, you delay the creation of your Flask application instance — which is useful for:
+
+* Creating multiple apps with different configurations.
+* Writing cleaner, more modular, and testable code.
+* Avoiding circular imports.
+
+If an extension (e.g., `SQLAlchemy`, `Mail`, `LoginManager`) is **bound to the app at import time**, it tightly couples the extension to a specific app instance, defeating the purpose of the factory pattern.
+
+---
+
+### ✅ **Best Practice: Use `init_app(app)`**
+
+Instead of binding during object creation:
+
+```python
+# NOT recommended in factory pattern
+db = SQLAlchemy(app)
+```
+
+Do this:
+
+```python
+# good: delay binding
+db = SQLAlchemy()
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object('config.Config')
+
+    db.init_app(app)  # bind here
+    return app
+```
+
+---
+
+### 📦 **Common Extensions Following This Pattern**
+
+Most Flask extensions follow this design, for example:
+
+```python
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
+from flask_login import LoginManager
+
+db = SQLAlchemy()
+mail = Mail()
+login_manager = LoginManager()
+```
+
+Then later, inside your factory function:
+
+```python
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+
+    db.init_app(app)
+    mail.init_app(app)
+    login_manager.init_app(app)
+
+    return app
+```
+
+---
+
+### ✅ Summary
+
+| Aspect               | Description                                                                    |
+| -------------------- | ------------------------------------------------------------------------------ |
+| **Don't do this:**   | `db = SQLAlchemy(app)` at global scope                                         |
+| **Do this instead:** | `db = SQLAlchemy()` and later `db.init_app(app)`                               |
+| **Why?**             | Keeps extension **app-agnostic**, supports multiple apps, improves testability |
+| **Pattern name**     | Application Factory Pattern                                                    |
+
+Let me know if you want a minimal runnable example!
