@@ -8,6 +8,7 @@ from flask_blog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from PIL import Image
 from flask_mail import Message
+from string import Template
 
 
 # Routes:
@@ -186,18 +187,30 @@ def user_posts(username):
 
 
 def send_reset_email(user):
-    print("nurdin - send_reset_email")
+    # set token and reset_url
     token = user.get_reset_token()
+    reset_url = url_for('reset_token', token=token, _external=True)
+
     # message subject line
     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+
     # message body
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
-If you did not make this request then simply ignore this email.'''
+    msg_template = Template("""
+    Hi $name,
+
+    To reset your password, visit the following link:
+    $reset_link
+
+    If you did not make this request, please ignore this email.
+
+    Best regards,  
+    Support Team
+    """)
+
+    msg.body = msg_template.substitute(name=user.username.title(), reset_link=reset_url)
+
     # send email
-    # print("nurdin - ", msg)
     mail.send(msg)
-    print("nurdin - email sent")
     return None
 
 @app.route("/reset_password", methods=['GET', 'POST'])
@@ -219,7 +232,7 @@ def reset_token(token):
     # check existing logged in user
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    user = User.verify_reset_token(token,30)
+    user = User.verify_reset_token(token)
     if not user:
         flash('That is an invalid or expired token.', 'warning')
         return redirect(url_for('reset_request'))
