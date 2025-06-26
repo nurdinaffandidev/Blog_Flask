@@ -4,6 +4,7 @@ from PIL import Image
 from flask import url_for
 from flask_mail import Message
 from flask_blog import app, mail
+from string import Template
 
 
 def save_picture(form_picture):
