@@ -15,7 +15,7 @@ users = Blueprint('users', __name__)
 def register():
     # check existing logged in user
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -28,7 +28,7 @@ def register():
         db.session.commit()
         # show feedback
         flash(f'Account created for {form.username.data.title()}! You are able to login with your new account!', 'success') # flash: to send a one-time alert
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
     return render_template('register.html', title="Flask Blog - Register", form=form)
 
 
@@ -36,7 +36,7 @@ def register():
 def login(): # name of function
     # check existing logged in user
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -49,7 +49,7 @@ def login(): # name of function
             # sample url: http://localhost:5001/login?next=%2Faccount
             next_page = request.args.get('next')
             flash(f'Logged in for account {form.email.data}', 'success')  # flash: to send a one-time alert
-            return redirect(next_page) if next_page else redirect(url_for('index'))
+            return redirect(next_page) if next_page else redirect(url_for('main.index'))
         else:
             flash('Invalid login credentials', 'danger')  # flash: to send a one-time alert
     return render_template('login.html', title="Flask Blog - Login", form=form)
@@ -58,7 +58,7 @@ def login(): # name of function
 @users.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('main.index'))
 
 
 @users.route("/account", methods=['GET', 'POST'])
@@ -74,7 +74,7 @@ def account():
         current_user.email = form.email.data
         db.session.commit()
         flash('Your account has been updated!', 'success')  # flash: to send a one-time alert
-        return redirect(url_for('account')) # redirect required due to post-get-redirect pattern
+        return redirect(url_for('users.account')) # redirect required due to post-get-redirect pattern
     elif request.method == 'GET': # populate fields with current_user data
         form.username.data = current_user.username
         form.email.data = current_user.email
@@ -98,13 +98,13 @@ def user_posts(username):
 def reset_request():
     # check existing logged in user
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
         flash('An email has been sent with instructions to reset your password.', 'info')
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
     return render_template('reset_request.html',title="Request Reset Password", form=form)
 
 
@@ -112,11 +112,11 @@ def reset_request():
 def reset_token(token):
     # check existing logged in user
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     user = User.verify_reset_token(token)
     if not user:
         flash('That is an invalid or expired token.', 'warning')
-        return redirect(url_for('reset_request'))
+        return redirect(url_for('users.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         # get hashed password
@@ -126,5 +126,5 @@ def reset_token(token):
         db.session.commit()
         # show feedback
         flash(f'Password successfully reset for {user.email}! You are able to login with your new password!', 'success') # flash: to send a one-time alert
-        return redirect(url_for('login'))
+        return redirect(url_for('users.login'))
     return render_template('reset_token.html', title="Reset Password", form=form)

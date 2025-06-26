@@ -20,7 +20,7 @@ def new_post():
         db.session.add(post)
         db.session.commit()
         flash('Your post has been created!', 'success')  # flash: to send a one-time alert
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     return render_template('create_post.html', title='New Post', form=form, legend='New Post')
 
 
@@ -46,7 +46,7 @@ def update_post(post_id):
         post.content = form.content.data
         db.session.commit()
         flash('Your post has been updated!', 'success')
-        return redirect(url_for('post', post_id=post.id)) # redirect required due to post-get-redirect pattern
+        return redirect(url_for('posts.post', post_id=post.id)) # redirect required due to post-get-redirect pattern
     elif request.method == 'GET':
         # populate form with existing post title and content
         form.title.data = post.title
@@ -63,4 +63,4 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash('Your post has been deleted!', 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('main.index'))

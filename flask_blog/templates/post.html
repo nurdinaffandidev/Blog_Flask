@@ -4,7 +4,7 @@
     <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">{{ post.author.username.title() }}</a>
+        <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username.title() }}</a>
         <small class="text-muted">{{ post.date_posted.strftime('%B %d, %Y') }}</small>
       </div>
       <div class="d-flex justify-content-between align-items-center">
@@ -13,7 +13,7 @@
         </div>
         {% if post.author == current_user %}
           <div>
-            <a class="btn btn-secondary btn-sm mb-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+            <a class="btn btn-secondary btn-sm mb-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-danger btn-sm mb-1 ml-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
           </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display: inline;">
+          <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST" style="display: inline;">
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
         </div>

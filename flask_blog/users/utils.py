@@ -33,7 +33,7 @@ def save_picture(form_picture):
 def send_reset_email(user):
     # set token and reset_url
     token = user.get_reset_token()
-    reset_url = url_for('reset_token', token=token, _external=True)
+    reset_url = url_for('users.reset_token', token=token, _external=True)
 
     # message subject line
     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])

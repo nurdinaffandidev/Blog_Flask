@@ -42,14 +42,14 @@
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
             <small class="text-muted">
-                <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
+                <a href="{{ url_for('users.reset_request') }}">Forgot Password?</a>
             </small>
         </form>
     </div>
     <div class="border-top pt-3">
         <small class="text-muted">
             Do not have an account?
-            <a class="ml-2" href="{{ url_for('register') }}">Sign In</a> <!-- note: in url_for, 'register' is name of function not name of route -->
+            <a class="ml-2" href="{{ url_for('users.register') }}">Sign In</a> <!-- note: in url_for, 'register' is name of function not name of route -->
         </small>
     </div>
 {% endblock content %}
