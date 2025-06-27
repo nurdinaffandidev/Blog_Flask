@@ -16,10 +16,36 @@ Use inherited class UserMixin for ease of implementation
 # decorator function
 @login_manager.user_loader
 def load_user(user_id):
+    """
+        Flask-Login user loader callback.
+
+        Given a user ID, this function loads and returns the corresponding User object from the database.
+
+        Args:
+            user_id (str): The user ID stored in the session.
+
+        Returns:
+            User | None: The User object if found, else None.
+    """
     return User.query.get(int(user_id))
 
 
 class User(db.Model, UserMixin):
+    """
+       User model for storing user account information.
+
+       Attributes:
+           id (int): Primary key.
+           username (str): Unique username (max 20 chars).
+           email (str): Unique user email (max 120 chars).
+           image_file (str): Filename for user's profile image.
+           password (str): Hashed password.
+           post (relationship): One-to-many relationship to Post.
+
+       Methods:
+           get_reset_token(): Generates a time-sensitive token for password reset.
+           verify_reset_token(token, expires_sec=1800): Verifies a password reset token.
+   """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)

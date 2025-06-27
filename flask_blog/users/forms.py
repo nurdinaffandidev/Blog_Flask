@@ -7,6 +7,20 @@ from flask_blog.models import User
 
 
 class RegistrationForm(FlaskForm):
+    """
+       Form for new user registration.
+
+       Fields:
+           - username: Required. 2–20 characters.
+           - email: Required. Must be a valid email format.
+           - password: Required. 6–20 characters.
+           - confirm_password: Must match password.
+           - submit: Sign-up button.
+
+       Custom Validators:
+           - validate_username: Ensures username is unique.
+           - validate_email: Ensures email is unique.
+   """
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
@@ -25,6 +39,15 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """
+        Form for existing user login.
+
+        Fields:
+            - email: Required. Must be a valid email format.
+            - password: Required.
+            - remember: Optional "Remember Me" checkbox.
+            - submit: Login button.
+    """
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
@@ -32,6 +55,19 @@ class LoginForm(FlaskForm):
 
 
 class UpdateAccountForm(FlaskForm):
+    """
+        Form for updating user account details.
+
+        Fields:
+            - username: Required. 2–20 characters.
+            - email: Required. Must be a valid email format.
+            - picture: Optional profile picture upload (jpg, jpeg, png).
+            - submit: Update button.
+
+        Custom Validators:
+            - validate_username: Ensures updated username is unique if changed.
+            - validate_email: Ensures updated email is unique if changed.
+    """
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
@@ -51,6 +87,16 @@ class UpdateAccountForm(FlaskForm):
 
 
 class RequestResetForm(FlaskForm):
+    """
+       Form to request a password reset via email.
+
+       Fields:
+           - email: Required. Must be a valid email format.
+           - submit: Request reset button.
+
+       Custom Validators:
+           - validate_email: Checks if the email is registered.
+   """
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
 
@@ -61,6 +107,14 @@ class RequestResetForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
+    """
+        Form to reset a user's password using a token.
+
+        Fields:
+            - password: Required. 6–20 characters.
+            - confirm_password: Must match password.
+            - submit: Reset password button.
+    """
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')

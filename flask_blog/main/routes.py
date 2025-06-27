@@ -9,6 +9,16 @@ main = Blueprint('main', __name__)
 @main.route("/")
 @main.route("/home")
 def index():
+    """
+       Render the home page with paginated blog posts.
+
+       - Retrieves the current page number from query parameters (defaults to 1).
+       - Fetches posts ordered by most recent first.
+       - Paginates the posts (5 per page).
+
+       Returns:
+           Response: Rendered home page with paginated posts.
+   """
     # setting default page
     page = request.args.get('page', 1, type=int)
     # setting number of post per page
@@ -18,4 +28,10 @@ def index():
 
 @main.route("/about")
 def about():
+    """
+        Render the About page.
+
+        Returns:
+            Response: Rendered static about page with title context.
+    """
     return render_template('about.html', title="Flask Blog - About")

@@ -13,6 +13,19 @@ users = Blueprint('users', __name__)
 
 @users.route("/register", methods=['GET', 'POST'])
 def register():
+    """
+        Handle user registration.
+
+        - Redirects authenticated users to the main index page.
+        - Displays a registration form for new users.
+        - Validates form submission and creates a new user account with a hashed password.
+        - Commits the user to the database and flashes a success message upon successful registration.
+        - Redirects the user to the login page after registration.
+
+        Returns:
+            Response: Rendered registration template on GET or failed POST.
+                      Redirect to login page on successful registration.
+    """
     # check existing logged in user
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -34,6 +47,18 @@ def register():
 
 @users.route("/login", methods=['GET', 'POST']) # name of route
 def login(): # name of function
+    """
+        Handle user login.
+
+        - Redirects authenticated users to the home page.
+        - Processes login form submission.
+        - Authenticates user using email and password.
+        - Redirects to the originally requested page if specified (`next` parameter).
+        - Flashes success or error messages.
+
+        Returns:
+            Response: Renders login page or redirects to the appropriate page after login.
+    """
     # check existing logged in user
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -57,6 +82,12 @@ def login(): # name of function
 
 @users.route("/logout")
 def logout():
+    """
+        Logs out the current user and redirects to the main index page.
+
+        Returns:
+            Response: Redirect to home page.
+    """
     logout_user()
     return redirect(url_for('main.index'))
 
@@ -64,6 +95,16 @@ def logout():
 @users.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
+    """
+        Display and update the current user's account information.
+
+        - Allows users to update their username, email, and profile picture.
+        - Pre-populates the form with current values on GET request.
+        - Commits changes on POST and redirects to avoid form resubmission.
+
+        Returns:
+            Response: Renders the account page or redirects after successful update.
+    """
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
@@ -84,6 +125,15 @@ def account():
 
 @users.route("/user/<string:username>")
 def user_posts(username):
+    """
+       Display blog posts by a specific user.
+
+       Args:
+           username (str): Username of the user whose posts are being viewed.
+
+       Returns:
+           Response: Renders a paginated list of blog posts by the user.
+   """
     page = request.args.get('page', 1, type=int)
     # getting user from username
     user = User.query.filter_by(username=username).first_or_404()
@@ -96,6 +146,15 @@ def user_posts(username):
 
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
+    """
+        Handle password reset request.
+
+        - Prevents logged-in users from accessing.
+        - Sends a password reset email if the provided email is registered.
+
+        Returns:
+            Response: Renders password reset request page or redirects after sending email.
+    """
     # check existing logged in user
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
@@ -110,6 +169,19 @@ def reset_request():
 
 @users.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
+    """
+        Handle password reset using a secure token.
+
+        - Verifies the token and identifies the user.
+        - Allows user to set a new password if the token is valid.
+        - Flashes feedback messages on success or failure.
+
+        Args:
+            token (str): Secure token used to verify password reset request.
+
+        Returns:
+            Response: Renders reset password form or redirects on failure/success.
+    """
     # check existing logged in user
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))

@@ -2,6 +2,20 @@ import os
 
 
 class Config:
+    """
+       Base configuration class for the Flask application.
+
+       This class holds default configuration settings such as:
+       - Secret key for session and CSRF protection
+       - Database connection URI
+       - Email server settings for sending emails
+
+       Environment Variables:
+           FLASK_SECRET_KEY (str): Secret key for securing sessions and forms.
+           FLASK_SQLALCHEMY_DATABASE_URI (str): Database URI (e.g., sqlite:///site.db).
+           EMAIL_USER (str): Email address used to send emails (e.g., noreply@demo.com).
+           EMAIL_PASS (str): Password or app-specific password for the email account.
+    """
     # Configure secret key:
     # Secret key will protect against modifying cookies and cross-site request forgery (csrf) attacks
     SECRET_KEY = os.environ.get('FLASK_SECRET_KEY')

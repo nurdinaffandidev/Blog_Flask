@@ -31,6 +31,20 @@ def save_picture(form_picture):
 
 
 def send_reset_email(user):
+    """
+        Sends a password reset email to the specified user.
+
+        This function generates a secure token for the user and constructs a password
+        reset URL. It then sends an email with this URL to the user's registered email
+        address using Flask-Mail.
+
+        Args:
+            user (User): The user object for whom the password reset is requested.
+                         Must have a `get_reset_token()` method and `email`, `username` attributes.
+
+        Returns:
+            None
+    """
     # set token and reset_url
     token = user.get_reset_token()
     reset_url = url_for('users.reset_token', token=token, _external=True)
