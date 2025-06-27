@@ -1,0 +1,63 @@
+`@pytest.fixture` is a decorator provided by the **pytest** testing framework in Python. It marks a function as a **fixture**, which means:
+
+> It is reusable setup code that you can **inject into your test functions**.
+
+---
+
+### ✅ **What does a fixture do?**
+
+Fixtures are used to:
+
+* Set up resources needed for tests (e.g., a database, Flask app, file, config).
+* Clean up after the test finishes.
+* Promote **modular, reusable**, and **maintainable** test setups.
+
+---
+
+### 🧪 Example:
+
+```python
+import pytest
+
+@pytest.fixture
+def sample_data():
+    return [1, 2, 3]
+
+def test_sum(sample_data):
+    assert sum(sample_data) == 6
+```
+
+Here, the test function `test_sum` uses the `sample_data` fixture. Pytest automatically calls `sample_data()` and injects its return value into the test.
+
+---
+
+### 🔄 Lifecycle
+
+* The fixture is executed **before** the test function that uses it.
+* If it contains a `yield`, any code after `yield` is run **after** the test — great for cleanup.
+
+---
+
+### 📦 Flask Example
+
+```python
+@pytest.fixture
+def app():
+    app = create_app('testing')
+    with app.app_context():
+        yield app
+```
+
+This `app()` fixture creates a Flask app instance, provides it to any test that requests it, and ensures context setup/teardown is handled.
+
+---
+
+### 🔗 In Summary:
+
+| Concept           | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `@pytest.fixture` | Marks a function as a reusable setup provider               |
+| Usage             | Inject it into tests by naming it in the test function args |
+| Benefits          | Cleaner, DRY (Don't Repeat Yourself) test setup             |
+
+Let me know if you'd like to see how to use fixtures for database transactions or Flask login sessions.
