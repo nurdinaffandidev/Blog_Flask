@@ -28,3 +28,21 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+
+
+class TestingConfig:
+    """
+        Configuration settings for running tests with the Flask application.
+
+        Attributes:
+            TESTING (bool): Enables testing mode for Flask, which provides better error reporting.
+            SQLALCHEMY_DATABASE_URI (str): Uses an in-memory SQLite database to ensure isolated, fast test runs.
+            SQLALCHEMY_TRACK_MODIFICATIONS (bool): Disables modification tracking to save resources during tests.
+            WTF_CSRF_ENABLED (bool): Disables CSRF protection in WTForms to simplify form testing.
+            SECRET_KEY (str): Secret key used by Flask for session management during testing.
+    """
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    WTF_CSRF_ENABLED = False
+    SECRET_KEY = 'testing-secret'
