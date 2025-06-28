@@ -2,6 +2,7 @@ import pytest
 from flask_blog import create_app, db
 from flask_blog.models import User
 from flask_bcrypt import Bcrypt
+from flask_blog.config import TestingConfig
 
 """
 Test Configuration Module for Flask Blog Application
@@ -47,7 +48,7 @@ Fixtures:
 @pytest.fixture
 def app():
     """Create and configure a new app instance for each test."""
-    app = create_app('testing')  # Use your custom testing config
+    app = create_app(TestingConfig)  # Use your custom testing config
     app.config.update({
         'TESTING': True,
         'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:',  # In-memory DB for fast, isolated tests
